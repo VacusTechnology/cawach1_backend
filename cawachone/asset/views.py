@@ -31,8 +31,6 @@ class AssetRegistration(APIView):
 
             atn = DailyReport()
             atn.tagId = var
-            atn.lastSeen = "--:--:--"
-            atn.inTime = "--:--:--"
             atn.save()
 
             mns = AttendanceSheet()
