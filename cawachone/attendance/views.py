@@ -19,23 +19,18 @@ class DailyReportAPI(APIView):
         try:
             attendancePayload = []
             for asset in Asset.objects.all():
-                print(asset)
-                print(asset.tagId)
                 atndnce = DailyReport.objects.filter(tagId=asset)
-                print(atndnce)
                 if atndnce.exists():
-                    attendancePayload.append({"tagId": asset.tagId, "name": asset.studentName, "department":asset.department,"phoneNumber":asset.phoneNumber,
-                                               "mailId":asset.mailId,"intime": atndnce[atndnce.count() - 1].inTime,
+                    attendancePayload.append({"tagId": asset.tagId, "name": asset.studentName, "department": asset.department, "phoneNumber": asset.phoneNumber,
+                                              "mailId": asset.mailId, "intime": atndnce[atndnce.count() - 1].inTime,
                                               "lastseen": atndnce[atndnce.count() - 1].lastSeen})
                 else:
-                    attendancePayload.append({"tagId :": asset.tagId, "name :": asset.studentName, "department":asset.department, "phonenumber":asset.phoneNumber,
-                                              "mailId": asset.mailId
-                                                 ,"intime": None, "lastseen :": None})
+                    attendancePayload.append({"tagId": asset.tagId, "name": asset.studentName, "department": asset.department, "phonenumber": asset.phoneNumber,
+                                              "mailId": asset.mailId, "intime": None, "lastseen": None})
 
             return Response({"attendance": attendancePayload}, status=status.HTTP_200_OK)
 
         except Exception as err:
-            print(err)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -48,12 +43,10 @@ class MonthlySheetApi(APIView):
         try:
             attendancePayload = []
             for asset in Asset.objects.all():
-                print("----", asset)
                 monthlyattendance = AttendanceSheet.objects.filter(tagId=asset)
-                print(monthlyattendance)
                 if monthlyattendance.exists():
                     attendancePayload.append({"tagId": asset.tagId, "name": asset.studentName,
-                                              "department": asset.department, "phoneNumber": asset.phoneNumber,"mailId":asset.mailId,
+                                              "department": asset.department, "phoneNumber": asset.phoneNumber, "mailId": asset.mailId,
                                               "day_1": monthlyattendance[monthlyattendance.count() - 1].day_1,
                                               "day_2": monthlyattendance[monthlyattendance.count() - 1].day_2,
                                               "day_3": monthlyattendance[monthlyattendance.count() - 1].day_3,
@@ -88,7 +81,8 @@ class MonthlySheetApi(APIView):
 
                                               })
                 else:
-                    attendancePayload.append({"tagId": asset.tagId, "name": asset.studentName, "department": asset.department, "phoneNumber":asset.phoneNumber,"mailId":asset.mailId})
+                    attendancePayload.append({"tagId": asset.tagId, "name": asset.studentName,
+                                              "department": asset.department, "phoneNumber": asset.phoneNumber, "mailId": asset.mailId})
             return Response({"attendance": attendancePayload}, status=status.HTTP_200_OK)
 
         except Exception as err:

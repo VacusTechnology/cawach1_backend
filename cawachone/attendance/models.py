@@ -1,18 +1,14 @@
-from django.db import models
-
 # Create your models here.
 from django.db import models
 
 # Create your models here.
 from asset.models import Asset
 
-""""""
-
 
 class DailyReport(models.Model):
     tagId = models.ForeignKey(Asset, on_delete=models.CASCADE)
     lastSeen = models.DateTimeField(auto_now=True)
-    inTime = models.DateTimeField(auto_now=True)
+    inTime = models.DateTimeField()
 
 
 class AttendanceSheet(models.Model):

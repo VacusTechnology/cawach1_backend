@@ -1,7 +1,6 @@
 from django.db import models
-
-
 # Create your models here.
+
 
 class Asset(models.Model):
     studentName = models.CharField(max_length=50)
@@ -14,6 +13,6 @@ class Asset(models.Model):
 
 
 class AssetHealth(models.Model):
-    asset = models.ForeignKey(Asset, on_delete=models.CASCADE)
-    lastseen = models.DateTimeField(auto_now=True)
+    tagId = models.ForeignKey(Asset, on_delete=models.CASCADE)
+    lastseen = models.DateTimeField()
     battery = models.FloatField()

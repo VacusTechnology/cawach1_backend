@@ -1,8 +1,8 @@
 # Create your views here.
 from datetime import datetime
-
 from django.db.models.aggregates import Count
 from django.shortcuts import render
+
 # Create your views here.
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
@@ -28,25 +28,29 @@ class SocialDistancing(APIView):
             enddate = request.data.get("end")
             tagId = request.data.get("tagId")
 
-            startEpoch = datetime.strptime(startdate, "%Y-%m-%d-%H:%M:%S").timestamp()
+            startEpoch = datetime.strptime(
+                startdate, "%Y-%m-%d-%H:%M:%S").timestamp()
             print("startEpoch time ", startEpoch)
-            endEpoch = datetime.strptime(enddate, "%Y-%m-%d-%H:%M:%S").timestamp()
+            endEpoch = datetime.strptime(
+                enddate, "%Y-%m-%d-%H:%M:%S").timestamp()
             print("endEpoch time ", endEpoch)
 
             payload = []
-            asset = Asset.objects.raw('select id from asset_asset where tagId = %s',[tagId])[0].id
+            asset = Asset.objects.raw(
+                'select id from asset_asset where tagId = %s', [tagId])[0].id
 
             if asset != None:
                 qry = 'select 1 as id, tag2_id from socialdistance_contacttracing where tag1_id = %s and epochTime between %s and %s group by tag2_id'
                 # distinct_tag_list  = ContactTracing.objects.raw(qry,[asset.id, startEpoch, endEpoch])
                 for tagList in ContactTracing.objects.raw(qry, [asset, startEpoch, endEpoch]):
                     print(tagList.tag2_id)
-                    qry2 = 'select 1 as id, epochTime from socialdistance_contacttracing where tag1_id = %s and tag2_id = %s  and epochTime between %s and %s  group by epochTime order by epochTime'
-                    result = ContactTracing.objects.raw(qry2, [asset, tagList.tag2_id, startEpoch, endEpoch])
+                    qry2 = 'select 1 as id, epochTime from socialdistance_contacttracing where tag1_id = %s and tag2_id = %s  and epochTime between %s and %s  order by epochTime'
+                    result = ContactTracing.objects.raw(
+                        qry2, [asset, tagList.tag2_id, startEpoch, endEpoch])
                     count = 0
                     comptime = 0
                     duration = 0
-                    startduration  = result[0].epochTime
+                    startduration = result[0].epochTime
                     print("[0] value : ", result[0].epochTime)
                     firsttime = result[0].epochTime
                     temptime = firsttime
@@ -58,7 +62,7 @@ class SocialDistancing(APIView):
                             startduration = comptime
                         firsttime = comptime
 
-                    tag2_macid = Asset.objects.filter(id=tagList.tag2_id)[0].tagId
+                    tag2_macid = Asset.objects.filter(id=tagList.tag2_id)[0]
 
                     if duration > 0:
                         seconds = duration
@@ -69,9 +73,9 @@ class SocialDistancing(APIView):
                         timing = "{}:{}:{}".format(hour, min, sec)
 
                         print("inside first append ")
-                        payload.append({"tagId": tag2_macid, "eventStartTime": datetime.fromtimestamp(temptime),
-                                                    "eventEndTime": datetime.fromtimestamp(comptime), "eventCount": count + 1,
-                                                    "timestamp": timing})
+                        payload.append({"tagId": tag2_macid.tagId, "name": tag2_macid.studentName, "eventStartTime": datetime.fromtimestamp(temptime),
+                                        "eventEndTime": datetime.fromtimestamp(comptime), "eventCount": count + 1,
+                                        "timestamp": timing})
                     else:
                         seconds = int(comptime-temptime)
                         sec = seconds % 60
@@ -80,7 +84,7 @@ class SocialDistancing(APIView):
                         hour = int(p2 / 60)
                         timing = "{}:{}:{}".format(hour, min, sec)
                         print("in second append ")
-                        payload.append({"tagId": tag2_macid, "eventStartTime": datetime.fromtimestamp(temptime),
+                        payload.append({"tagId": tag2_macid.tagId, "name": tag2_macid.studentName, "eventStartTime": datetime.fromtimestamp(temptime),
                                         "eventEndTime": datetime.fromtimestamp(comptime), "eventCount": count + 1,
                                         "timestamp": timing})
 
