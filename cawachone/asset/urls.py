@@ -8,5 +8,6 @@ urlpatterns = [
     path('studentdetails', AssetDetails.as_view()),
     path('studenthealth', AssetHealthApi.as_view()),
     path('updatestudent', UpdateStudent.as_view()),
-    path('details', StudentDetails.as_view())
+    path('details', StudentDetails.as_view()),
+    path('bulkupload', BulkUploadApi.as_view())
 ]
